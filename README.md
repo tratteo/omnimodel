@@ -1,4 +1,4 @@
-### Model complex data and with it in an easy and safe way
+### Model complex data and access it in an easy and safe way
 
 ## Features
 
