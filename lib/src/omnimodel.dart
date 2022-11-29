@@ -1,4 +1,4 @@
-import 'dart:convert' as convert;
+import 'dart:convert';
 
 import 'package:omnimodel/src/common/extensions.dart';
 
@@ -43,6 +43,16 @@ class OmniModel {
   /// Create the model from a map
   factory OmniModel.fromMap(Map<String, dynamic> map) => OmniModel._(Map.from(map));
 
+  /// Create a new model from the string representation of a map
+  factory OmniModel.fromRawJson(String rawJson) {
+    try {
+      var jsonMap = jsonDecode(rawJson);
+      return OmniModel.fromDynamicOrIdentity(jsonMap);
+    } catch (error) {
+      return OmniModel.identity();
+    }
+  }
+
   /// Create the model from entries of a map
   factory OmniModel.fromEntries(Iterable<MapEntry<String, dynamic>> entries) => OmniModel._(Map.fromEntries(entries));
 
@@ -50,7 +60,7 @@ class OmniModel {
   Map<String, dynamic> get json => Map.from(_map);
 
   /// String encoding of the model
-  String toRawJson() => convert.json.encode(json);
+  String toRawJson() => jsonEncode(json);
 
   @override
   String toString() => toRawJson();
