@@ -116,7 +116,7 @@ class OmniModel {
     if (current is T) {
       return current;
     } else if (OmniModelPerferences.enableHints) {
-      logWarning("tried to retrieve $key as $T but value is of type ${current.runtimeType}}");
+      logWarning("tried to retrieve $key as $T but value is of type ${current.runtimeType}");
     }
     return null;
   }
