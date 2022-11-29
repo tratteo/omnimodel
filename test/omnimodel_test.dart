@@ -63,7 +63,7 @@ void main() {
       var model = OmniModel.identity();
       expect(model.isNotEmpty, false);
       model = OmniModel.fromMap(testMap);
-      expect(model.isEmpty, testMap.isNotEmpty);
+      expect(model.isNotEmpty, testMap.isNotEmpty);
     });
 
     test("json copy", () {
