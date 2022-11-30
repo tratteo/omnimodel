@@ -91,8 +91,8 @@ class OmniModel {
   /// Safely access a map with a combined path. The path will be converted to lower case.
   /// Examples paths:
   /// - `first.second`
-  /// - `first.second\\third` <- ugly but works
-  /// - `first.second\\third,fourth` <- ugly but works
+  /// - `first.second\third` <- ugly but works
+  /// - `first|second\third,fourth` <- super ugly but works
   ///
   /// Supported delimiters: <code>. \ / | ,</code>
   T? tokenOrNull<T>(String path) {
