@@ -9,3 +9,7 @@
 ## 1.0.2
 
 -   Examples.
+
+## 1.0.3
+
+-   Fixed a problem in which in certain situations, calling `tokenAsModel` would throw an exception.

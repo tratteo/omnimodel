@@ -110,8 +110,12 @@ class OmniModel {
       }
     }
     //logInfo("${T == Model}, ${current is Map}");
-    if (T == OmniModel && current is Map) {
-      return OmniModel.fromMap(current as Map<String, dynamic>) as T;
+    if (T == OmniModel) {
+      if (current is Map) {
+        return OmniModel.fromMap(Map.from(current)) as T;
+      } else {
+        return null;
+      }
     }
     if (current is T) {
       return current;
