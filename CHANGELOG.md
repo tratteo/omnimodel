@@ -13,3 +13,7 @@
 ## 1.0.3
 
 -   Fixed a problem in which in certain situations, calling `tokenAsModel` would throw an exception.
+
+## 1.0.4
+
+-   Fixed a problem in which in certain situations, calling `tokenAsModel` would throw an exception.

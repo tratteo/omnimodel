@@ -37,8 +37,9 @@ class OmniModel {
   factory OmniModel.identity() => OmniModel._(Map.identity());
 
   /// Try to create from a dynamic type. If the type is not `Map<String, dynamic>`, returns an empty model
-  factory OmniModel.fromDynamicOrIdentity(dynamic value) =>
-      value is Map<String, dynamic> ? OmniModel.fromMap(value) : OmniModel.identity();
+  factory OmniModel.fromDynamicOrIdentity(dynamic value) => value is Map
+      ? OmniModel.fromEntries(value.entries.map((e) => MapEntry(e.key.toString(), e.value)))
+      : OmniModel.identity();
 
   /// Create the model from a map
   factory OmniModel.fromMap(Map<String, dynamic> map) => OmniModel._(Map.from(map));
@@ -112,7 +113,7 @@ class OmniModel {
     //logInfo("${T == Model}, ${current is Map}");
     if (T == OmniModel) {
       if (current is Map) {
-        return OmniModel.fromMap(Map.from(current)) as T;
+        return OmniModel.fromEntries(current.entries.map((e) => MapEntry(e.key.toString(), e.value))) as T;
       } else {
         return null;
       }

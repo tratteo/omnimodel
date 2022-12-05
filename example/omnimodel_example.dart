@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:omnimodel/src/common/logger.dart';
@@ -43,6 +44,7 @@ void main() {
 """);
   logInfo("map ${JsonEncoder.withIndent(" ").convert(map)}");
   logInfo("■" * 100);
+
   logInfo("■ map[first] > ${model.tokenOrNull("first")}\n${"-" * 100}");
   logInfo("■ map[first] as String > ${model.tokenOrNull<String>("first")}\n${"-" * 100}");
   logInfo("■ map[second] as String > ${model.tokenOr("second", "not found")}\n${"-" * 100}");
