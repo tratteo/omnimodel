@@ -1,7 +1,7 @@
-import 'dart:convert';
+import "dart:convert";
 
-import 'package:omnimodel/omnimodel.dart';
-import 'package:test/test.dart';
+import "package:omnimodel/omnimodel.dart";
+import "package:test/test.dart";
 
 void main() {
   const testMap = {
@@ -85,10 +85,15 @@ void main() {
     });
     test("token as model", () {
       var model = OmniModel.fromMap(testMap);
+      // ignore: cast_nullable_to_non_nullable
       expect(model.tokenAsModel("l13.l22").json, (testMap["l13"] as Map)["l22"]);
+      // ignore: cast_nullable_to_non_nullable
       expect(model.tokenAsModel("l13/l22").json, (testMap["l13"] as Map)["l22"]);
+      // ignore: cast_nullable_to_non_nullable
       expect(model.tokenAsModel("l13,l22").json, (testMap["l13"] as Map)["l22"]);
-      expect(model.tokenAsModel("l13\\l22").json, (testMap["l13"] as Map)["l22"]);
+      // ignore: cast_nullable_to_non_nullable
+      expect(model.tokenAsModel(r"l13\l22").json, (testMap["l13"] as Map)["l22"]);
+      // ignore: cast_nullable_to_non_nullable
       expect(model.tokenAsModel("l13|l22").json, (testMap["l13"] as Map)["l22"]);
     });
 
@@ -96,6 +101,7 @@ void main() {
       var model = OmniModel.fromMap(testMap);
       expect(model.tokenOr("l11", 1), testMap["l11"]);
       expect(model.tokenOr("invalid", 1), 1);
+      // ignore: cast_nullable_to_non_nullable
       expect(model.tokenOr<Map>("l13.l22", Map.identity()), (testMap["l13"] as Map)["l22"]);
     });
     test("token or null", () {

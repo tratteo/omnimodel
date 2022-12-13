@@ -1,6 +1,7 @@
-import 'dart:math';
+import "dart:math";
 
 extension StringExtensions on String {
+  /// Calculate the Levenshtein distance between two arbitrary strings
   int levenshtein(String t, {bool caseSensitive = true}) {
     var s = this;
     if (!caseSensitive) {
@@ -36,6 +37,7 @@ extension StringExtensions on String {
 }
 
 extension MapExtensions on Map {
+  /// Perform a *ueep update* of a map
   Map deepUpdate<T>(List<String> keyPaths, T value) {
     return _deepUpdateRecursive(keyPaths, this, value);
   }

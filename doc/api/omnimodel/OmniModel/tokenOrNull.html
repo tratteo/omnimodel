@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the tokenOrNull method from the OmniModel class, for the Dart programming language.">
+  <title>tokenOrNull method - OmniModel class - omnimodel library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">omnimodel</a></li>
+    <li><a href="../../omnimodel/omnimodel-library.html">omnimodel</a></li>
+    <li><a href="../../omnimodel/OmniModel-class.html">OmniModel</a></li>
+    <li class="self-crumb">tokenOrNull&lt;<wbr><span class="type-parameter">T</span>&gt; method</li>
+  </ol>
+  <div class="self-name">tokenOrNull</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">tokenOrNull&lt;<wbr><span class="type-parameter">T</span>&gt;</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype">T?</span>
+<span class="name ">tokenOrNull</span>&lt;<wbr><span class="type-parameter">T</span>&gt;(<wbr><ol class="parameter-list"><li><span class="parameter" id="tokenOrNull-param-path"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">path</span></span></li>
+</ol>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Safely access a map with a combined path. The path will be converted to lower case.
+Examples paths:</p>
+<ul>
+<li><code>first.second</code></li>
+<li><code>first.second\third</code> &lt;- ugly but works</li>
+<li><code>first|second\third,fourth</code> &lt;- super ugly but works</li>
+</ul>
+<p>Supported delimiters: <code>. \ / | ,</code></p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">T? tokenOrNull&lt;T&gt;(String path) {
+  if (OmniModelPerferences.enforceLowerCaseKeys) {
+    path = path.toLowerCase();
+  }
+  var fields = path.trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter);
+  dynamic current = _map;
+  String key = &quot;&quot;;
+  for (final t in fields) {
+    key = t;
+    if (current is! Map) return null;
+    var checkpoint = current;
+    current = current[t];
+    if (current == null) {
+      _displayKeyHints(t, checkpoint);
+      return null;
+    }
+  }
+  &#47;&#47;logInfo(&quot;${T == Model}, ${current is Map}&quot;);
+  if (T == OmniModel) {
+    if (current is Map) {
+      return OmniModel.fromEntries(current.entries.map((e) =&gt; MapEntry(e.key.toString(), e.value))) as T;
+    } else {
+      return null;
+    }
+  }
+  if (current is T) {
+    return current;
+  } else if (OmniModelPerferences.enableHints) {
+    logWarning(&quot;tried to retrieve $key as $T but value is of type ${current.runtimeType}&quot;);
+  }
+  return null;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">omnimodel</a></li>
+  <li><a href="../../omnimodel/omnimodel-library.html">omnimodel</a></li>
+  <li><a href="../../omnimodel/OmniModel-class.html">OmniModel</a></li>
+  <li class="self-crumb">tokenOrNull&lt;<wbr><span class="type-parameter">T</span>&gt; method</li>
+</ol>
+
+
+    <h5>OmniModel class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../omnimodel/OmniModel-class.html#constructors">Constructors</a></li>
+          <li><a href="../../omnimodel/OmniModel/OmniModel.fromDynamicOrIdentity.html">fromDynamicOrIdentity</a></li>
+          <li><a href="../../omnimodel/OmniModel/OmniModel.fromEntries.html">fromEntries</a></li>
+          <li><a href="../../omnimodel/OmniModel/OmniModel.fromMap.html">fromMap</a></li>
+          <li><a href="../../omnimodel/OmniModel/OmniModel.fromRawJson.html">fromRawJson</a></li>
+          <li><a href="../../omnimodel/OmniModel/OmniModel.identity.html">identity</a></li>
+
+
+    <li class="section-title">
+      <a href="../../omnimodel/OmniModel-class.html#instance-properties">Properties</a>
+    </li>
+    <li><a href="../../omnimodel/OmniModel/entries.html">entries</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li><a href="../../omnimodel/OmniModel/isEmpty.html">isEmpty</a></li>
+    <li><a href="../../omnimodel/OmniModel/isNotEmpty.html">isNotEmpty</a></li>
+    <li><a href="../../omnimodel/OmniModel/json.html">json</a></li>
+    <li><a href="../../omnimodel/OmniModel/length.html">length</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+
+    <li class="section-title"><a href="../../omnimodel/OmniModel-class.html#instance-methods">Methods</a></li>
+    <li><a href="../../omnimodel/OmniModel/copyWith.html">copyWith</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li><a href="../../omnimodel/OmniModel/tokenAsModel.html">tokenAsModel</a></li>
+    <li><a href="../../omnimodel/OmniModel/tokenOr.html">tokenOr</a></li>
+    <li><a href="../../omnimodel/OmniModel/tokenOrNull.html">tokenOrNull</a></li>
+    <li><a href="../../omnimodel/OmniModel/toRawJson.html">toRawJson</a></li>
+    <li><a href="../../omnimodel/OmniModel/toString.html">toString</a></li>
+
+    <li class="section-title inherited"><a href="../../omnimodel/OmniModel-class.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    omnimodel
+      1.0.5
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

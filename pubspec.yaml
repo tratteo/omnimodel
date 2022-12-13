@@ -1,7 +1,7 @@
 name: omnimodel
 description: Model complex data and access it in an easy and safe way
 repository: https://github.com/tratteo/omnimodel
-version: 1.0.4
+version: 1.0.5
 
 environment:
     sdk: ">=2.18.5 <3.0.0"

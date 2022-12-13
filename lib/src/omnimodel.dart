@@ -1,37 +1,19 @@
-import 'dart:convert';
+import "dart:convert";
 
-import 'package:omnimodel/src/common/extensions.dart';
+import "package:omnimodel/src/common/extensions.dart";
 
-import 'common/logger.dart';
+import "package:omnimodel/src/common/logger.dart";
 
 class OmniModelPerferences {
+  /// Toggle console hints about mispelled keys and mismatched types
   static bool enableHints = true;
+
+  /// Enforce the keys of every [OmniModel] to be lowercase. This automatically changes the keys to lowercase when creating and accessing the [OmniModel]
+  static bool enforceLowerCaseKeys = true;
 }
 
 class OmniModel {
-  static const String _defaultDelimiter = ".";
-  static final RegExp _delimiters = RegExp(r"\.+|\/+|\|+|\\+|\,+");
-
-  final Map<String, dynamic> _map;
-  OmniModel._(this._map);
-
-  /// The length of the keys of the map
-  int get length => _map.entries.length;
-
-  /// Whether it has no keys
-  bool get isEmpty => length <= 0;
-
-  bool get isNotEmpty => !isEmpty;
-
-  void _displayKeyHints(String original, Map map) {
-    if (!OmniModelPerferences.enableHints) return;
-    var closeMatches = (map).keys.where(
-        (element) => element is String && original.levenshtein(element, caseSensitive: false) < original.length / 2);
-    if (closeMatches.isNotEmpty) {
-      var text = "$original key not found X( -> maybe one of [${closeMatches.join(", ")}] ?";
-      logWarning(text);
-    }
-  }
+  OmniModel._(Map<String, dynamic> map) : _map = map.map((key, value) => MapEntry(key.toLowerCase(), value));
 
   /// Empty model
   factory OmniModel.identity() => OmniModel._(Map.identity());
@@ -56,6 +38,32 @@ class OmniModel {
 
   /// Create the model from entries of a map
   factory OmniModel.fromEntries(Iterable<MapEntry<String, dynamic>> entries) => OmniModel._(Map.fromEntries(entries));
+  static const String _defaultDelimiter = ".";
+  static final RegExp _delimiters = RegExp(r"\.+|\/+|\|+|\\+|\,+");
+
+  final Map<String, dynamic> _map;
+
+  /// The length of the keys of the map
+  int get length => _map.entries.length;
+
+  /// Whether it has no keys
+  bool get isEmpty => length <= 0;
+
+  /// Whether it has keys
+  bool get isNotEmpty => !isEmpty;
+
+  void _displayKeyHints(String original, Map map) {
+    if (!OmniModelPerferences.enableHints) return;
+    var closeMatches = map.keys.where(
+        (element) => element is String && original.levenshtein(element, caseSensitive: false) < original.length / 2,);
+    if (closeMatches.isNotEmpty) {
+      var text = "$original key not found X( -> maybe one of [${closeMatches.join(", ")}] ?";
+      logWarning(text);
+    }
+  }
+
+  /// Get a copy of the entries
+  Iterable<MapEntry<String, dynamic>> get entries => _map.entries.toList();
 
   /// Get a copy of the underlying map
   Map<String, dynamic> get json => Map.from(_map);
@@ -74,10 +82,10 @@ class OmniModel {
   /// In this case the [OmniModel] will be modified by changing the `["field"]` value to 0 and the field corresponding to `["data"]["entry"]["payload"]` to "dummy"
   OmniModel copyWith(Map<String, dynamic> fieldPaths) {
     Map newJson = json;
-    for (var element in fieldPaths.entries) {
+    for (final element in fieldPaths.entries) {
       newJson = newJson.deepUpdate(
           element.key.toLowerCase().trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter),
-          element.value);
+          element.value,);
     }
     var newMap = Map<String, dynamic>.from(newJson);
     return OmniModel.fromMap(newMap);
@@ -97,10 +105,13 @@ class OmniModel {
   ///
   /// Supported delimiters: <code>. \ / | ,</code>
   T? tokenOrNull<T>(String path) {
-    var fields = path.toLowerCase().trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter);
+    if (OmniModelPerferences.enforceLowerCaseKeys) {
+      path = path.toLowerCase();
+    }
+    var fields = path.trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter);
     dynamic current = _map;
     String key = "";
-    for (var t in fields) {
+    for (final t in fields) {
       key = t;
       if (current is! Map) return null;
       var checkpoint = current;
