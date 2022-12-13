@@ -29,8 +29,7 @@ void main() {
   // OmniModelPerferences.enableHints = false;
   // Flutter:
   // OmniModelPreferences.enableHints = kDebugMode;
-  logInfo(
-      """
+  logInfo("""
 \n
 ░█████╗░███╗░░░███╗███╗░░██╗██╗███╗░░░███╗░█████╗░██████╗░███████╗██╗░░░░░
 ██╔══██╗████╗░████║████╗░██║██║████╗░████║██╔══██╗██╔══██╗██╔════╝██║░░░░░

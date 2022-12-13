@@ -25,3 +25,7 @@
 - Added project lints to enforce style
 - Exposed extension methdods `levensthein` on String and `deepUpdate` on Map
 - Get the entries of an OmniModel directly using `entries`
+
+## 1.0.6
+
+- OmniModelPreferences `enforceLowerCaseKeys`
