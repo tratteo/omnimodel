@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the levenshtein method from the StringExtensions extension, for the Dart programming language.">
+  <title>levenshtein method - StringExtensions extension - omnimodel library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">omnimodel</a></li>
+    <li><a href="../../omnimodel/omnimodel-library.html">omnimodel</a></li>
+    <li><a href="../../omnimodel/StringExtensions.html">StringExtensions</a></li>
+    <li class="self-crumb">levenshtein method</li>
+  </ol>
+  <div class="self-name">levenshtein</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">levenshtein</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+<span class="name ">levenshtein</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="levenshtein-param-t"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">t</span>, </span></li>
+<li><span class="parameter" id="levenshtein-param-caseSensitive">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">caseSensitive</span> = <span class="default-value">true</span>}</span></li>
+</ol>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Calculate the Levenshtein distance between two arbitrary strings</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">int levenshtein(String t, {bool caseSensitive = true}) {
+  var s = this;
+  if (!caseSensitive) {
+    s = s.toLowerCase();
+    t = t.toLowerCase();
+  }
+  if (s == t) return 0;
+  if (s.isEmpty) return t.length;
+  if (t.isEmpty) return s.length;
+
+  List&lt;int&gt; v0 = List&lt;int&gt;.filled(t.length + 1, 0);
+  List&lt;int&gt; v1 = List&lt;int&gt;.filled(t.length + 1, 0);
+
+  for (int i = 0; i &lt; t.length + 1; i &lt; i++) {
+    v0[i] = i;
+  }
+
+  for (int i = 0; i &lt; s.length; i++) {
+    v1[0] = i + 1;
+
+    for (int j = 0; j &lt; t.length; j++) {
+      int cost = (s[i] == t[j]) ? 0 : 1;
+      v1[j + 1] = min(v1[j] + 1, min(v0[j + 1] + 1, v0[j] + cost));
+    }
+
+    for (int j = 0; j &lt; t.length + 1; j++) {
+      v0[j] = v1[j];
+    }
+  }
+
+  return v1[t.length];
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">omnimodel</a></li>
+  <li><a href="../../omnimodel/omnimodel-library.html">omnimodel</a></li>
+  <li><a href="../../omnimodel/StringExtensions.html">StringExtensions</a></li>
+  <li class="self-crumb">levenshtein method</li>
+</ol>
+
+
+    <h5>StringExtensions extension</h5>
+    <ol>
+
+
+
+
+
+    <li class="section-title"><a href="../../omnimodel/StringExtensions.html#instance-methods">Methods</a></li>
+    <li><a href="../../omnimodel/StringExtensions/levenshtein.html">levenshtein</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    omnimodel
+      1.0.5
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
