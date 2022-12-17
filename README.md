@@ -2,7 +2,7 @@
  
   <a href="">![GitHub](https://img.shields.io/github/license/tratteo/omnimodel?color=orange&label=License)</a>
   <a href="">![GitHub top language](https://img.shields.io/github/languages/top/tratteo/omnimodel?color=blue&label=dart&logo=dart)</a>
-  <a href="">![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/tratteo/omnimodel/Dart%20CI/main?label=Tests&logo=github)</a>
+  <a href="">![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/tratteo/omnimodel/dart.yml?branch=main&label=Test&logo=github)</a>
   <a href="">![GitHub last commit (branch)](https://img.shields.io/github/last-commit/tratteo/omnimodel/main?label=Last%20commit&color=brightgreen&logo=github)</a>
 </div> 
 
