@@ -13,15 +13,15 @@ class OmniModelPerferences {
 }
 
 class OmniModel {
-  OmniModel._(Map<String, dynamic> map) : _map = map.map((key, value) => MapEntry(key.toLowerCase(), value));
+  OmniModel._(Map<String, dynamic> map)
+      : _map = map.map((key, value) => MapEntry(OmniModelPerferences.enforceLowerCaseKeys ? key.toLowerCase() : key, value));
 
   /// Empty model
   factory OmniModel.identity() => OmniModel._(Map.identity());
 
   /// Try to create from a dynamic type. If the type is not `Map<String, dynamic>`, returns an empty model
-  factory OmniModel.fromDynamicOrIdentity(dynamic value) => value is Map
-      ? OmniModel.fromEntries(value.entries.map((e) => MapEntry(e.key.toString(), e.value)))
-      : OmniModel.identity();
+  factory OmniModel.fromDynamicOrIdentity(dynamic value) =>
+      value is Map ? OmniModel.fromEntries(value.entries.map((e) => MapEntry(e.key.toString(), e.value))) : OmniModel.identity();
 
   /// Create the model from a map
   factory OmniModel.fromMap(Map<String, dynamic> map) => OmniModel._(Map.from(map));
@@ -55,7 +55,8 @@ class OmniModel {
   void _displayKeyHints(String original, Map map) {
     if (!OmniModelPerferences.enableHints) return;
     var closeMatches = map.keys.where(
-        (element) => element is String && original.levenshtein(element, caseSensitive: false) < original.length / 2,);
+      (element) => element is String && original.levenshtein(element, caseSensitive: false) < original.length / 2,
+    );
     if (closeMatches.isNotEmpty) {
       var text = "$original key not found X( -> maybe one of [${closeMatches.join(", ")}] ?";
       logWarning(text);
@@ -83,9 +84,11 @@ class OmniModel {
   OmniModel copyWith(Map<String, dynamic> fieldPaths) {
     Map newJson = json;
     for (final element in fieldPaths.entries) {
+      var key = OmniModelPerferences.enforceLowerCaseKeys ? element.key.toLowerCase() : element.key;
       newJson = newJson.deepUpdate(
-          element.key.toLowerCase().trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter),
-          element.value,);
+        key.trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter),
+        element.value,
+      );
     }
     var newMap = Map<String, dynamic>.from(newJson);
     return OmniModel.fromMap(newMap);

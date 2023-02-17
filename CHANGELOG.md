@@ -29,3 +29,7 @@
 ## 1.0.6
 
 - OmniModelPreferences `enforceLowerCaseKeys`
+
+## 1.0.7
+
+- OmniModelPreferences `enforceLowerCaseKeys` fix
