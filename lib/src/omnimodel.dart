@@ -14,14 +14,22 @@ class OmniModelPerferences {
 
 class OmniModel {
   OmniModel._(Map<String, dynamic> map)
-      : _map = map.map((key, value) => MapEntry(OmniModelPerferences.enforceLowerCaseKeys ? key.toLowerCase() : key, value));
+      : _map = map.map(
+          (key, value) => MapEntry(
+            OmniModelPerferences.enforceLowerCaseKeys ? key.toLowerCase() : key,
+            value,
+          ),
+        );
 
   /// Empty model
   factory OmniModel.identity() => OmniModel._(Map.identity());
 
   /// Try to create from a dynamic type. If the type is not `Map<String, dynamic>`, returns an empty model
-  factory OmniModel.fromDynamicOrIdentity(dynamic value) =>
-      value is Map ? OmniModel.fromEntries(value.entries.map((e) => MapEntry(e.key.toString(), e.value))) : OmniModel.identity();
+  factory OmniModel.fromDynamic(dynamic value) => value is Map
+      ? OmniModel.fromEntries(
+          value.entries.map((e) => MapEntry(e.key.toString(), e.value)),
+        )
+      : OmniModel.identity();
 
   /// Create the model from a map
   factory OmniModel.fromMap(Map<String, dynamic> map) => OmniModel._(Map.from(map));
@@ -30,7 +38,7 @@ class OmniModel {
   factory OmniModel.fromRawJson(String rawJson) {
     try {
       var jsonMap = jsonDecode(rawJson);
-      return OmniModel.fromDynamicOrIdentity(jsonMap);
+      return OmniModel.fromDynamic(jsonMap);
     } catch (error) {
       return OmniModel.identity();
     }
@@ -55,7 +63,7 @@ class OmniModel {
   void _displayKeyHints(String original, Map map) {
     if (!OmniModelPerferences.enableHints) return;
     var closeMatches = map.keys.where(
-      (element) => element is String && original.levenshtein(element, caseSensitive: false) < original.length / 2,
+      (element) => element is String && original.similarityConvolution(element, caseSensitive: false) > 0.75,
     );
     if (closeMatches.isNotEmpty) {
       var text = "$original key not found X( -> maybe one of [${closeMatches.join(", ")}] ?";
@@ -127,7 +135,9 @@ class OmniModel {
     //logInfo("${T == Model}, ${current is Map}");
     if (T == OmniModel) {
       if (current is Map) {
-        return OmniModel.fromEntries(current.entries.map((e) => MapEntry(e.key.toString(), e.value))) as T;
+        return OmniModel.fromEntries(
+          current.entries.map((e) => MapEntry(e.key.toString(), e.value)),
+        ) as T;
       } else {
         return null;
       }
@@ -135,7 +145,9 @@ class OmniModel {
     if (current is T) {
       return current;
     } else if (OmniModelPerferences.enableHints) {
-      logWarning("tried to retrieve $key as $T but value is of type ${current.runtimeType}");
+      logWarning(
+        "tried to retrieve $key as $T but value is of type ${current.runtimeType}",
+      );
     }
     return null;
   }

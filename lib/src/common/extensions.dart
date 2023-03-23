@@ -1,6 +1,36 @@
 import "dart:math";
 
 extension StringExtensions on String {
+  /// Returns a value between 0 and 1 indicating the similarity ratio of the two substrings
+  double similarityConvolution(String t, {bool caseSensitive = false}) {
+    var minSeq = length < t.length
+        ? caseSensitive
+            ? this
+            : toLowerCase()
+        : caseSensitive
+            ? t
+            : t.toLowerCase();
+    var maxSeq = length < t.length
+        ? caseSensitive
+            ? t
+            : t.toLowerCase()
+        : caseSensitive
+            ? this
+            : toLowerCase();
+
+    var maxMatch = 0;
+    // Convolution
+    for (var i = 0; i < maxSeq.length; i++) {
+      var cost = 0;
+      if (i + minSeq.length > maxSeq.length) return maxMatch / minSeq.length;
+      for (var j = 0; j < minSeq.length; j++) {
+        cost += maxSeq[i + j] == minSeq[j] ? 1 : 0;
+      }
+      maxMatch = max(maxMatch, cost);
+    }
+    return maxMatch / minSeq.length;
+  }
+
   /// Calculate the Levenshtein distance between two arbitrary strings
   int levenshtein(String t, {bool caseSensitive = true}) {
     var s = this;
@@ -42,7 +72,12 @@ extension MapExtensions on Map {
     return _deepUpdateRecursive(keyPaths, this, value);
   }
 
-  dynamic _deepUpdateRecursive<T>(List keyPath, dynamic data, T value, [int i = 0]) {
+  dynamic _deepUpdateRecursive<T>(
+    List keyPath,
+    dynamic data,
+    T value, [
+    int i = 0,
+  ]) {
     if (i == keyPath.length) {
       return value;
     }

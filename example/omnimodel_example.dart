@@ -29,7 +29,8 @@ void main() {
   // OmniModelPerferences.enableHints = false;
   // Flutter:
   // OmniModelPreferences.enableHints = kDebugMode;
-  logInfo("""
+  logInfo(
+      """
 \n
 ░█████╗░███╗░░░███╗███╗░░██╗██╗███╗░░░███╗░█████╗░██████╗░███████╗██╗░░░░░
 ██╔══██╗████╗░████║████╗░██║██║████╗░████║██╔══██╗██╔══██╗██╔════╝██║░░░░░
@@ -44,22 +45,40 @@ void main() {
   logInfo("map ${JsonEncoder.withIndent(" ").convert(map)}");
   logInfo("■" * 100);
   logInfo("■ map[first] > ${model.tokenOrNull("first")}\n${"-" * 100}");
-  logInfo("■ map[first] as String > ${model.tokenOrNull<String>("first")}\n${"-" * 100}");
-  logInfo("■ map[second] as String > ${model.tokenOr("second", "not found")}\n${"-" * 100}");
-  logInfo("■ map[second] as List > ${model.tokenOr<List>("second", List.empty())}\n${"-" * 100}");
-  logInfo("■ map[third] as Map > ${model.tokenOrNull<Map>("third")}\n${"-" * 100}");
+  logInfo(
+    "■ map[first] as String > ${model.tokenOrNull<String>("first")}\n${"-" * 100}",
+  );
+  logInfo(
+    "■ map[second] as String > ${model.tokenOr("second", "not found")}\n${"-" * 100}",
+  );
+  logInfo(
+    "■ map[second] as List > ${model.tokenOr<List>("second", List.empty())}\n${"-" * 100}",
+  );
+  logInfo(
+    "■ map[third] as Map > ${model.tokenOrNull<Map>("third")}\n${"-" * 100}",
+  );
   logInfo(
     "■ map[third][key3] with OmniModel concatenation > ${model.tokenAsModel("third").tokenOrNull("key3")}\n${"-" * 100}",
   );
-  logInfo("■ map[third][key3] with combined path > ${model.tokenOrNull("third.key3")}\n${"-" * 100}");
+  logInfo(
+    "■ map[third][key3] with combined path > ${model.tokenOrNull("third.key3")}\n${"-" * 100}",
+  );
   logInfo("■ map[fourth] as Map > ${model.tokenOr("fourth", {"new_key": 1})}\n${"-" * 100}");
-  logInfo("■ map[fourth] as List > ${model.tokenOrNull<List>("fourth")}\n${"-" * 100}");
-  logInfo("■ map[fifth] (not exists) > ${model.tokenOrNull("fifth")}\n${"-" * 100}");
+  logInfo(
+    "■ map[fourth] as List > ${model.tokenOrNull<List>("fourth")}\n${"-" * 100}",
+  );
+  logInfo(
+    "■ map[fifth] (not exists) > ${model.tokenOrNull("fifth")}\n${"-" * 100}",
+  );
   logInfo(
     "■ map[fifth] (not exists) with default value > ${model.tokenOr<String>("fifth", "not found")}\n${"-" * 100}",
   );
-  logInfo("■ map[fourth1] (mispelled key) > ${model.tokenOrNull("fourth1")}\n${"-" * 100}");
-  logInfo("■ map[third][key4] (mispelled key) > ${model.tokenOrNull("third.key4")}\n${"-" * 100}");
+  logInfo(
+    "■ map[fourth1] (mispelled key) > ${model.tokenOrNull("fourth1")}\n${"-" * 100}",
+  );
+  logInfo(
+    "■ map[third][key4] (mispelled key) > ${model.tokenOrNull("third.key4")}\n${"-" * 100}",
+  );
   logInfo("■ Iterate");
   model.json.forEach(
     (key, value) => logInfo("- ($key, $value)"),
@@ -69,8 +88,18 @@ void main() {
 
   var s1 = "Hello World!";
   var s2 = "Hello mad World!";
-  var distance = s1.levenshtein(s2);
-  logInfo("■ Levenshtein distance ($s1) - ($s2) > $distance");
+  var distance = s1.similarityConvolution(s2);
+  logInfo("■ Similarity convolution distance ($s1) - ($s2) > $distance");
+
+  s1 = "Hello World!";
+  s2 = "Hello World!";
+  distance = s1.similarityConvolution(s2);
+  logInfo("■ Similarity convolution distance ($s1) - ($s2) > $distance");
+
+  s1 = "Hello World!";
+  s2 = "Hello World.";
+  distance = s1.similarityConvolution(s2);
+  logInfo("■ Similarity convolution distance ($s1) - ($s2) > $distance");
 
   var mapCopy = OmniModel.fromMap(map).json;
   logInfo("■ Deep update");

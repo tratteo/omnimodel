@@ -33,3 +33,7 @@
 ## 1.0.7
 
 - OmniModelPreferences `enforceLowerCaseKeys` fix
+
+## 1.0.8
+
+- Changed the similarity algorithm for keys from `levenshtein` to a custom `similarityConvolution`
