@@ -4,19 +4,28 @@ import "package:omnimodel/src/common/extensions.dart";
 
 import "package:omnimodel/src/common/logger.dart";
 
+enum SimilarityBackend {
+  levenshtein,
+  convolution,
+}
+
 class OmniModelPerferences {
   /// Toggle console hints about mispelled keys and mismatched types
   static bool enableHints = true;
 
   /// Enforce the keys of every [OmniModel] to be lowercase. This automatically changes the keys to lowercase when creating and accessing the [OmniModel]
   static bool enforceLowerCaseKeys = true;
+
+  /// Edit the algorithm used for calculating similarity among strings.
+  static SimilarityBackend similarityBackend = SimilarityBackend.convolution;
 }
 
+/// Wrap data and access it safely: forget about errors or missing keys
 class OmniModel {
-  OmniModel._(Map<String, dynamic> map)
-      : _map = map.map(
+  OmniModel._(Map map)
+      : _data = map.map(
           (key, value) => MapEntry(
-            OmniModelPerferences.enforceLowerCaseKeys ? key.toLowerCase() : key,
+            OmniModelPerferences.enforceLowerCaseKeys ? key.toString().toLowerCase() : key.toString(),
             value,
           ),
         );
@@ -24,7 +33,11 @@ class OmniModel {
   /// Empty model
   factory OmniModel.identity() => OmniModel._(Map.identity());
 
-  /// Try to create from a dynamic type. If the type is not `Map<String, dynamic>`, returns an empty model
+  /// Try to create from a dynamic type.
+  ///
+  /// - If the type is not `Map`, returns an empty model
+  ///
+  /// - Any map type will be converted to `Map<String, dynamic>` by using `toString()` on keys
   factory OmniModel.fromDynamic(dynamic value) => value is Map
       ? OmniModel.fromEntries(
           value.entries.map((e) => MapEntry(e.key.toString(), e.value)),
@@ -32,9 +45,11 @@ class OmniModel {
       : OmniModel.identity();
 
   /// Create the model from a map
-  factory OmniModel.fromMap(Map<String, dynamic> map) => OmniModel._(Map.from(map));
+  ///
+  /// Any map type will be converted to `Map<String, dynamic>` by using `toString()` on keys
+  factory OmniModel.fromMap(Map map) => OmniModel._(map);
 
-  /// Create a new model from the string representation of a map
+  /// Create a new model from the string representation of a map. Returns an identity model on error
   factory OmniModel.fromRawJson(String rawJson) {
     try {
       var jsonMap = jsonDecode(rawJson);
@@ -44,15 +59,16 @@ class OmniModel {
     }
   }
 
-  /// Create the model from entries of a map
+  /// Create the model from the entries of a map
   factory OmniModel.fromEntries(Iterable<MapEntry<String, dynamic>> entries) => OmniModel._(Map.fromEntries(entries));
+
   static const String _defaultDelimiter = ".";
   static final RegExp _delimiters = RegExp(r"\.+|\/+|\|+|\\+|\,+");
 
-  final Map<String, dynamic> _map;
+  final Map<String, dynamic> _data;
 
   /// The length of the keys of the map
-  int get length => _map.entries.length;
+  int get length => _data.entries.length;
 
   /// Whether it has no keys
   bool get isEmpty => length <= 0;
@@ -63,19 +79,37 @@ class OmniModel {
   void _displayKeyHints(String original, Map map) {
     if (!OmniModelPerferences.enableHints) return;
     var closeMatches = map.keys.where(
-      (element) => element is String && original.similarityConvolution(element, caseSensitive: false) > 0.75,
+      (element) => element is String && original.activeSimilarity(element, caseSensitive: false) > 0.8,
     );
     if (closeMatches.isNotEmpty) {
-      var text = "$original key not found X( -> maybe one of [${closeMatches.join(", ")}] ?";
+      var text = "$original not found -> maybe one of [${closeMatches.join(", ")}] ?";
       logWarning(text);
     }
   }
 
+  /// Return the entry with the most similar key as the provided one.
+  ///
+  /// Uses the [OmniModelPreferences.similarityBackend] as similarity algorithm
+  ///
+  /// Returns null if the map is empty
+  MapEntry<String, dynamic>? similar(String key) {
+    double max = 0;
+    MapEntry<String, dynamic>? res;
+    for (final entry in entries) {
+      var d = entry.key.activeSimilarity(key);
+      if (d > max) {
+        max = d;
+        res = entry;
+      }
+    }
+    return res;
+  }
+
   /// Get a copy of the entries
-  Iterable<MapEntry<String, dynamic>> get entries => _map.entries.toList();
+  Iterable<MapEntry<String, dynamic>> get entries => _data.entries.toList();
 
   /// Get a copy of the underlying map
-  Map<String, dynamic> get json => Map.from(_map);
+  Map<String, dynamic> get json => Map.from(_data);
 
   /// String encoding of the model
   String toRawJson() => jsonEncode(json);
@@ -85,8 +119,14 @@ class OmniModel {
 
   /// Copy the model into a new model modifying the specified fields. Add the fields if not present in the original model.
   /// Supports deep pathing.
-  /// ___
-  /// `{"field": 0, "data.entry.payload": "dummy"}`
+  /// -----
+  /// Example
+  ///
+  /// ```dart
+  /// {
+  ///   "field": 0, "data.entry.payload": "dummy"
+  /// }
+  /// ```
   ///
   /// In this case the [OmniModel] will be modified by changing the `["field"]` value to 0 and the field corresponding to `["data"]["entry"]["payload"]` to "dummy"
   OmniModel copyWith(Map<String, dynamic> fieldPaths) {
@@ -102,7 +142,7 @@ class OmniModel {
     return OmniModel.fromMap(newMap);
   }
 
-  /// Try to get the specified field as an underlying [OmniModel], returns the identity in case of not found or if the field is not a `Map<String, dynamic>`
+  /// Try to get the specified field as an underlying [OmniModel], returns the identity in case of not found or if the field is not a `Map`
   OmniModel tokenAsModel(String path) => tokenOr<OmniModel>(path, OmniModel.identity());
 
   /// Force the default value to a non nullable type
@@ -120,7 +160,7 @@ class OmniModel {
       path = path.toLowerCase();
     }
     var fields = path.trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter);
-    dynamic current = _map;
+    dynamic current = _data;
     String key = "";
     for (final t in fields) {
       key = t;

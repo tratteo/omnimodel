@@ -1,7 +1,19 @@
 import "dart:math";
 
+import "package:omnimodel/src/omnimodel.dart";
+
 extension StringExtensions on String {
-  /// Returns a value between 0 and 1 indicating the similarity ratio of the two substrings
+  /// Returns a value between in range `[0,1]` indicating the similarity ratio of the two substrings using the active similarity algorithm defined in [OmniModelPreferences.similarityBackend]
+  double activeSimilarity(String t, {bool caseSensitive = false}) {
+    switch (OmniModelPerferences.similarityBackend) {
+      case SimilarityBackend.levenshtein:
+        return t.levenshtein(this, caseSensitive: caseSensitive);
+      case SimilarityBackend.convolution:
+        return t.similarityConvolution(this, caseSensitive: caseSensitive);
+    }
+  }
+
+  /// Returns a value between in range `[0,1]` indicating the similarity ratio of the two substrings
   double similarityConvolution(String t, {bool caseSensitive = false}) {
     var minSeq = length < t.length
         ? caseSensitive
@@ -31,16 +43,17 @@ extension StringExtensions on String {
     return maxMatch / minSeq.length;
   }
 
-  /// Calculate the Levenshtein distance between two arbitrary strings
-  int levenshtein(String t, {bool caseSensitive = true}) {
+  /// Calculate a coefficient based on the *Levenshtein* distance between two arbitrary strings
+  double levenshtein(String t, {bool caseSensitive = true}) {
     var s = this;
     if (!caseSensitive) {
       s = s.toLowerCase();
       t = t.toLowerCase();
     }
+    var maxLen = max(t.length, length);
     if (s == t) return 0;
-    if (s.isEmpty) return t.length;
-    if (t.isEmpty) return s.length;
+    if (s.isEmpty) return 1 - (t.length / maxLen);
+    if (t.isEmpty) return 1 - (s.length / maxLen);
 
     List<int> v0 = List<int>.filled(t.length + 1, 0);
     List<int> v1 = List<int>.filled(t.length + 1, 0);
@@ -62,12 +75,12 @@ extension StringExtensions on String {
       }
     }
 
-    return v1[t.length];
+    return 1 - (v1[t.length] / maxLen);
   }
 }
 
 extension MapExtensions on Map {
-  /// Perform a *ueep update* of a map
+  /// Perform a *deep update* of a map
   Map deepUpdate<T>(List<String> keyPaths, T value) {
     return _deepUpdateRecursive(keyPaths, this, value);
   }

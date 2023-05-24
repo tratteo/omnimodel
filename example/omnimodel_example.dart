@@ -3,6 +3,13 @@ import "dart:convert";
 import "package:omnimodel/omnimodel.dart";
 import "package:omnimodel/src/common/logger.dart";
 
+void showStringDistances(String s1, String s2) {
+  var distance = s1.similarityConvolution(s2);
+  logInfo("■ Similarity convolution distance ($s1) - ($s2) > $distance");
+  distance = s1.levenshtein(s2);
+  logInfo("■ Levenshtein distance ($s1) - ($s2) > $distance");
+}
+
 void main() {
   const map = {
     "first": 0,
@@ -29,8 +36,7 @@ void main() {
   // OmniModelPerferences.enableHints = false;
   // Flutter:
   // OmniModelPreferences.enableHints = kDebugMode;
-  logInfo(
-      """
+  logInfo("""
 \n
 ░█████╗░███╗░░░███╗███╗░░██╗██╗███╗░░░███╗░█████╗░██████╗░███████╗██╗░░░░░
 ██╔══██╗████╗░████║████╗░██║██║████╗░████║██╔══██╗██╔══██╗██╔════╝██║░░░░░
@@ -43,7 +49,7 @@ void main() {
 ██▄ █░█ █▀█ █░▀░█ █▀▀ █▄▄ ██▄ ▄█                                                       
 """);
   logInfo("map ${JsonEncoder.withIndent(" ").convert(map)}");
-  logInfo("■" * 100);
+  print("■" * 100);
   logInfo("■ map[first] > ${model.tokenOrNull("first")}\n${"-" * 100}");
   logInfo(
     "■ map[first] as String > ${model.tokenOrNull<String>("first")}\n${"-" * 100}",
@@ -79,27 +85,23 @@ void main() {
   logInfo(
     "■ map[third][key4] (mispelled key) > ${model.tokenOrNull("third.key4")}\n${"-" * 100}",
   );
+  logInfo("■ Similar");
+  logInfo("\tmost similar to thirt > ${model.similar("thirt")}");
+  logInfo("\tmost similar to secondly > ${model.similar("secondly")}");
+  logInfo("\tmost similar to fifth > ${model.similar("fifth")}");
+
   logInfo("■ Iterate");
   model.json.forEach(
-    (key, value) => logInfo("- ($key, $value)"),
+    (key, value) => logInfo("($key, $value)"),
   );
-  logInfo("■" * 100);
+  print("■" * 100);
   logInfo("EXTENSIONS");
 
-  var s1 = "Hello World!";
-  var s2 = "Hello mad World!";
-  var distance = s1.similarityConvolution(s2);
-  logInfo("■ Similarity convolution distance ($s1) - ($s2) > $distance");
-
-  s1 = "Hello World!";
-  s2 = "Hello World!";
-  distance = s1.similarityConvolution(s2);
-  logInfo("■ Similarity convolution distance ($s1) - ($s2) > $distance");
-
-  s1 = "Hello World!";
-  s2 = "Hello World.";
-  distance = s1.similarityConvolution(s2);
-  logInfo("■ Similarity convolution distance ($s1) - ($s2) > $distance");
+  showStringDistances("Hello World!", "Hello mad World!");
+  showStringDistances("Hello World!", "Hello World!");
+  showStringDistances("Hello World!", "Hello World.");
+  showStringDistances("abba", "aaaa");
+  showStringDistances("ab ba", "aaaa");
 
   var mapCopy = OmniModel.fromMap(map).json;
   logInfo("■ Deep update");

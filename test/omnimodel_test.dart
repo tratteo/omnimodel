@@ -137,4 +137,21 @@ void main() {
       expect(model.tokenOrNull("new"), 1);
     });
   });
+  group("preferences", () {
+    setUp(() {
+      OmniModelPerferences.enableHints = false;
+    });
+
+    test("lower case keys", () {
+      var newMap = testMap.deepUpdate(["Key"], "value");
+      OmniModelPerferences.enforceLowerCaseKeys = true;
+      var model = OmniModel.fromMap(newMap);
+      expect(model.tokenOrNull("key"), isNot(null));
+      expect(model.tokenOrNull("Key"), isNot(null));
+      OmniModelPerferences.enforceLowerCaseKeys = false;
+      model = OmniModel.fromMap(newMap);
+      expect(model.tokenOrNull("key"), null);
+      expect(model.tokenOrNull("Key"), isNot(null));
+    });
+  });
 }
