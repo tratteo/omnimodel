@@ -98,7 +98,8 @@ extension MapExtensions on Map {
       data = Map.identity();
     }
     data = Map.from(data);
-    data[keyPath[i]] = _deepUpdateRecursive(keyPath, data[keyPath[i]], value, ++i);
+    data[keyPath[i]] =
+        _deepUpdateRecursive(keyPath, data[keyPath[i]], value, ++i);
     return data;
   }
 }

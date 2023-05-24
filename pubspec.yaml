@@ -1,10 +1,10 @@
 name: omnimodel
-description: Model complex data and access it in an easy and safe way
+description: Model complex data and access it in an easy and safe way. OmniModel wraps data structures and allows the developer to handle missing entries and fields
 repository: https://github.com/tratteo/omnimodel
-version: 1.0.9
+version: 1.0.10
 
 environment:
-    sdk: ">=2.18.5 <= 3.0.1"
+    sdk: ">=2.18.5 <4.0.0"
 
 dev_dependencies:
     lints: ^2.0.0

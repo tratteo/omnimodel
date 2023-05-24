@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.10
+
+-   Fixed static analysis and pub points
+-   Adjusted dart SDK version
+
 ## 1.0.9
 
 -   Improved documentation
