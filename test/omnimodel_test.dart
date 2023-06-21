@@ -18,59 +18,59 @@ void main() {
     }
   };
   group("factories", () {
-    test("identity", () {
-      var model = OmniModel.identity();
-      expect(model.json, Map.identity());
+    test("empty", () {
+      var model = OmniModel.empty();
+      expect(model.json, {});
     });
-    test("from dynamic or identity", () {
+    test("from dynamic", () {
       var model = OmniModel.fromDynamic(-1);
-      expect(model.json, Map.identity());
+      expect(model.json, {});
       model = OmniModel.fromDynamic(testMap);
       expect(model.json, testMap);
     });
     test("from map", () {
-      var model = OmniModel.fromMap(Map.identity());
-      expect(model.json, Map.identity());
+      var model = OmniModel.fromMap({});
+      expect(model.json, {});
       model = OmniModel.fromMap(testMap);
       expect(model.json, testMap);
     });
     test("from entries", () {
       var model = OmniModel.fromEntries([]);
-      expect(model.json, Map.identity());
+      expect(model.json, {});
       model = OmniModel.fromEntries(testMap.entries);
       expect(model.json, testMap);
     });
 
     test("from raw json", () {
       var model = OmniModel.fromRawJson("");
-      expect(model.json, Map.identity());
+      expect(model.json, {});
       model = OmniModel.fromRawJson(jsonEncode(testMap));
       expect(model.json, testMap);
     });
   });
   group("properties", () {
     test("length", () {
-      var model = OmniModel.identity();
+      var model = OmniModel.empty();
       expect(model.length, 0);
       model = OmniModel.fromMap(testMap);
       expect(model.length, testMap.entries.length);
     });
     test("is empty", () {
-      var model = OmniModel.identity();
+      var model = OmniModel.empty();
       expect(model.isEmpty, true);
       model = OmniModel.fromMap(testMap);
       expect(model.isEmpty, testMap.isEmpty);
     });
     test("is not empty", () {
-      var model = OmniModel.identity();
+      var model = OmniModel.empty();
       expect(model.isNotEmpty, false);
       model = OmniModel.fromMap(testMap);
       expect(model.isNotEmpty, testMap.isNotEmpty);
     });
 
     test("json copy", () {
-      var model = OmniModel.identity();
-      expect(model.json, Map.identity());
+      var model = OmniModel.empty();
+      expect(model.json, {});
       model = OmniModel.fromMap(testMap);
       expect(model.json, testMap);
       var jsonCopy = model.json;
@@ -87,6 +87,7 @@ void main() {
     test("to raw json", () {
       var model = OmniModel.fromRawJson(jsonEncode(testMap));
       expect(model.toRawJson(), jsonEncode(testMap));
+      expect(model.toRawJson(indent: "\t"), JsonEncoder.withIndent("\t").convert(model.json));
     });
     test("token as model", () {
       var model = OmniModel.fromMap(testMap);
@@ -119,7 +120,7 @@ void main() {
       expect(model.tokenOr("l11", 1), testMap["l11"]);
       expect(model.tokenOr("invalid", 1), 1);
       expect(
-        model.tokenOr<Map>("l13.l22", Map.identity()),
+        model.tokenOr<Map>("l13.l22", {}),
         (testMap["l13"] as Map)["l22"],
       );
     });
@@ -134,6 +135,14 @@ void main() {
       model = model.copyWith({"l13.l22": 1});
       expect(model.tokenOrNull("l13.l22"), 1);
       model = model.copyWith({"new": 1});
+      expect(model.tokenOrNull("new"), 1);
+    });
+    test("edit", () {
+      var model = OmniModel.fromMap(testMap).copyWith({"l11": 1});
+      expect(model.tokenOrNull("l11"), 1);
+      model.edit({"l13.l22": 1});
+      expect(model.tokenOrNull("l13.l22"), 1);
+      model.edit({"new": 1});
       expect(model.tokenOrNull("new"), 1);
     });
   });

@@ -1,22 +1,24 @@
 // ignore_for_file: avoid_print
+import "package:tint/tint.dart";
+
 enum Severity { info, warning, error }
 
-void logInfo(Object? object) => log(object, Severity.info);
+void printInfo(Object? object) => omniPrint(object, Severity.info);
 
-void logWarning(Object? object) => log(object, Severity.warning);
+void printWarning(Object? object) => omniPrint(object, Severity.warning);
 
-void logError(Object? object) => log(object, Severity.error);
+void printError(Object? object) => omniPrint(object, Severity.error);
 
-void log(Object? object, Severity severity) {
+void omniPrint(Object? object, Severity severity) {
   switch (severity) {
     case Severity.info:
-      print("[omnimodel] - $object");
+      print("[omnimodel] $object".dim());
       break;
     case Severity.warning:
-      print("[omnimodel warning] - $object");
+      print("[omnimodel] $object".yellow().dim());
       break;
     case Severity.error:
-      print("[omnimodel error] - $object");
+      print("[omnimodel] $object".red().dim());
       break;
     default:
   }

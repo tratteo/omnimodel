@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0
+
+### ❗Breaking changes
+
+-   Adjusted function names to better reflect their functionality:
+    -   `OmniModel.identity()` > `OmniModel.empty()`
+-   Added the in place `OmniModel.edit()` method
+-   Added _indent_ parameter to `OmniModel.toRawJson()`
+-   Adjusted hint printing style
+
 ## 1.0.10
 
 -   Fixed static analysis and pub points

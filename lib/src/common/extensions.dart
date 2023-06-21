@@ -80,6 +80,8 @@ extension StringExtensions on String {
 }
 
 extension MapExtensions on Map {
+  OmniModel asOmniModel() => OmniModel.fromMap(this);
+
   /// Perform a *deep update* of a map
   Map deepUpdate<T>(List<String> keyPaths, T value) {
     return _deepUpdateRecursive(keyPaths, this, value);
@@ -95,11 +97,10 @@ extension MapExtensions on Map {
       return value;
     }
     if (data is! Map) {
-      data = Map.identity();
+      data = {};
     }
     data = Map.from(data);
-    data[keyPath[i]] =
-        _deepUpdateRecursive(keyPath, data[keyPath[i]], value, ++i);
+    data[keyPath[i]] = _deepUpdateRecursive(keyPath, data[keyPath[i]], value, ++i);
     return data;
   }
 }

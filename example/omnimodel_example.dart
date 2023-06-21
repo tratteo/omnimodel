@@ -5,9 +5,9 @@ import "package:omnimodel/src/common/logger.dart";
 
 void showStringDistances(String s1, String s2) {
   var distance = s1.similarityConvolution(s2);
-  logInfo("■ Similarity convolution distance ($s1) - ($s2) > $distance");
+  printInfo("■ Similarity convolution distance ($s1) - ($s2) > $distance");
   distance = s1.levenshtein(s2);
-  logInfo("■ Levenshtein distance ($s1) - ($s2) > $distance");
+  printInfo("■ Levenshtein distance ($s1) - ($s2) > $distance");
 }
 
 void main() {
@@ -36,7 +36,7 @@ void main() {
   // OmniModelPerferences.enableHints = false;
   // Flutter:
   // OmniModelPreferences.enableHints = kDebugMode;
-  logInfo("""
+  printInfo("""
 \n
 ░█████╗░███╗░░░███╗███╗░░██╗██╗███╗░░░███╗░█████╗░██████╗░███████╗██╗░░░░░
 ██╔══██╗████╗░████║████╗░██║██║████╗░████║██╔══██╗██╔══██╗██╔════╝██║░░░░░
@@ -48,54 +48,54 @@ void main() {
 █▀▀ ▀▄▀ ▄▀█ █▀▄▀█ █▀█ █░░ █▀▀ █▀
 ██▄ █░█ █▀█ █░▀░█ █▀▀ █▄▄ ██▄ ▄█                                                       
 """);
-  logInfo("map ${JsonEncoder.withIndent(" ").convert(map)}");
+  printInfo("map ${JsonEncoder.withIndent(" ").convert(map)}");
   print("■" * 100);
-  logInfo("■ map[first] > ${model.tokenOrNull("first")}\n${"-" * 100}");
-  logInfo(
+  printInfo("■ map[first] > ${model.tokenOrNull("first")}\n${"-" * 100}");
+  printInfo(
     "■ map[first] as String > ${model.tokenOrNull<String>("first")}\n${"-" * 100}",
   );
-  logInfo(
+  printInfo(
     "■ map[second] as String > ${model.tokenOr("second", "not found")}\n${"-" * 100}",
   );
-  logInfo(
+  printInfo(
     "■ map[second] as List > ${model.tokenOr<List>("second", List.empty())}\n${"-" * 100}",
   );
-  logInfo(
+  printInfo(
     "■ map[third] as Map > ${model.tokenOrNull<Map>("third")}\n${"-" * 100}",
   );
-  logInfo(
+  printInfo(
     "■ map[third][key3] with OmniModel concatenation > ${model.tokenAsModel("third").tokenOrNull("key3")}\n${"-" * 100}",
   );
-  logInfo(
+  printInfo(
     "■ map[third][key3] with combined path > ${model.tokenOrNull("third.key3")}\n${"-" * 100}",
   );
-  logInfo("■ map[fourth] as Map > ${model.tokenOr("fourth", {"new_key": 1})}\n${"-" * 100}");
-  logInfo(
+  printInfo("■ map[fourth] as Map > ${model.tokenOr("fourth", {"new_key": 1})}\n${"-" * 100}");
+  printInfo(
     "■ map[fourth] as List > ${model.tokenOrNull<List>("fourth")}\n${"-" * 100}",
   );
-  logInfo(
+  printInfo(
     "■ map[fifth] (not exists) > ${model.tokenOrNull("fifth")}\n${"-" * 100}",
   );
-  logInfo(
+  printInfo(
     "■ map[fifth] (not exists) with default value > ${model.tokenOr<String>("fifth", "not found")}\n${"-" * 100}",
   );
-  logInfo(
+  printInfo(
     "■ map[fourth1] (mispelled key) > ${model.tokenOrNull("fourth1")}\n${"-" * 100}",
   );
-  logInfo(
+  printInfo(
     "■ map[third][key4] (mispelled key) > ${model.tokenOrNull("third.key4")}\n${"-" * 100}",
   );
-  logInfo("■ Similar");
-  logInfo("\tmost similar to thirt > ${model.similar("thirt")}");
-  logInfo("\tmost similar to secondly > ${model.similar("secondly")}");
-  logInfo("\tmost similar to fifth > ${model.similar("fifth")}");
+  printInfo("■ Similar");
+  printInfo("\tmost similar to thirt > ${model.similar("thirt")}");
+  printInfo("\tmost similar to secondly > ${model.similar("secondly")}");
+  printInfo("\tmost similar to fifth > ${model.similar("fifth")}");
 
-  logInfo("■ Iterate");
+  printInfo("■ Iterate");
   model.json.forEach(
-    (key, value) => logInfo("($key, $value)"),
+    (key, value) => printInfo("($key, $value)"),
   );
   print("■" * 100);
-  logInfo("EXTENSIONS");
+  printInfo("EXTENSIONS");
 
   showStringDistances("Hello World!", "Hello mad World!");
   showStringDistances("Hello World!", "Hello World!");
@@ -104,12 +104,12 @@ void main() {
   showStringDistances("ab ba", "aaaa");
 
   var mapCopy = OmniModel.fromMap(map).json;
-  logInfo("■ Deep update");
-  logInfo("\tinitial map = $mapCopy");
+  printInfo("■ Deep update");
+  printInfo("\tinitial map = $mapCopy");
   var edited = mapCopy.deepUpdate(["third", "key2"], "string!");
-  logInfo('\tdeep updated [third, key2] < "string!" = $edited');
+  printInfo('\tdeep updated [third, key2] < "string!" = $edited');
   edited = mapCopy.deepUpdate(["third", "key4"], ":D");
-  logInfo('\tdeep updated [third, key4] < ":D" = $edited');
+  printInfo('\tdeep updated [third, key4] < ":D" = $edited');
   edited = mapCopy.deepUpdate(["third", "key2", "new_key"], "newkey!");
-  logInfo('\tdeep updated [third, key2, new_key] < "newkey!" = $edited');
+  printInfo('\tdeep updated [third, key2, new_key] < "newkey!" = $edited');
 }

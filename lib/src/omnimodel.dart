@@ -25,15 +25,13 @@ class OmniModel {
   OmniModel._(Map map)
       : _data = map.map(
           (key, value) => MapEntry(
-            OmniModelPerferences.enforceLowerCaseKeys
-                ? key.toString().toLowerCase()
-                : key.toString(),
+            OmniModelPerferences.enforceLowerCaseKeys ? key.toString().toLowerCase() : key.toString(),
             value,
           ),
         );
 
   /// Empty model
-  factory OmniModel.identity() => OmniModel._(Map.identity());
+  factory OmniModel.empty() => OmniModel._({});
 
   /// Try to create from a dynamic type.
   ///
@@ -44,31 +42,30 @@ class OmniModel {
       ? OmniModel.fromEntries(
           value.entries.map((e) => MapEntry(e.key.toString(), e.value)),
         )
-      : OmniModel.identity();
+      : OmniModel.empty();
 
   /// Create the model from a map
   ///
   /// Any map type will be converted to `Map<String, dynamic>` by using `toString()` on keys
   factory OmniModel.fromMap(Map map) => OmniModel._(map);
 
-  /// Create a new model from the string representation of a map. Returns an identity model on error
+  /// Create a new model from the string representation of a map. Returns an empty model on error
   factory OmniModel.fromRawJson(String rawJson) {
     try {
       var jsonMap = jsonDecode(rawJson);
       return OmniModel.fromDynamic(jsonMap);
     } catch (error) {
-      return OmniModel.identity();
+      return OmniModel.empty();
     }
   }
 
   /// Create the model from the entries of a map
-  factory OmniModel.fromEntries(Iterable<MapEntry<String, dynamic>> entries) =>
-      OmniModel._(Map.fromEntries(entries));
+  factory OmniModel.fromEntries(Iterable<MapEntry<String, dynamic>> entries) => OmniModel._(Map.fromEntries(entries));
 
   static const String _defaultDelimiter = ".";
   static final RegExp _delimiters = RegExp(r"\.+|\/+|\|+|\\+|\,+");
 
-  final Map<String, dynamic> _data;
+  Map<String, dynamic> _data;
 
   /// The length of the keys of the map
   int get length => _data.entries.length;
@@ -82,14 +79,11 @@ class OmniModel {
   void _displayKeyHints(String original, Map map) {
     if (!OmniModelPerferences.enableHints) return;
     var closeMatches = map.keys.where(
-      (element) =>
-          element is String &&
-          original.activeSimilarity(element, caseSensitive: false) > 0.8,
+      (element) => element is String && original.activeSimilarity(element, caseSensitive: false) > 0.8,
     );
     if (closeMatches.isNotEmpty) {
-      var text =
-          "$original not found -> maybe one of [${closeMatches.join(", ")}] ?";
-      logWarning(text);
+      var text = "$original not found -> maybe one of [${closeMatches.join(", ")}] ?";
+      printWarning(text);
     }
   }
 
@@ -118,7 +112,7 @@ class OmniModel {
   Map<String, dynamic> get json => Map.from(_data);
 
   /// String encoding of the model
-  String toRawJson() => jsonEncode(json);
+  String toRawJson({String? indent}) => JsonEncoder.withIndent(indent).convert(json);
 
   @override
   String toString() => toRawJson();
@@ -134,18 +128,13 @@ class OmniModel {
   /// }
   /// ```
   ///
-  /// In this case the [OmniModel] will be modified by changing the `["field"]` value to 0 and the field corresponding to `["data"]["entry"]["payload"]` to "dummy"
+  /// A new [OmniModel] will be created with the `["field"]` value to 0 and the field corresponding to `["data"]["entry"]["payload"]` to "dummy"
   OmniModel copyWith(Map<String, dynamic> fieldPaths) {
     Map newJson = json;
     for (final element in fieldPaths.entries) {
-      var key = OmniModelPerferences.enforceLowerCaseKeys
-          ? element.key.toLowerCase()
-          : element.key;
+      var key = OmniModelPerferences.enforceLowerCaseKeys ? element.key.toLowerCase() : element.key;
       newJson = newJson.deepUpdate(
-        key
-            .trim()
-            .replaceAll(_delimiters, _defaultDelimiter)
-            .split(_defaultDelimiter),
+        key.trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter),
         element.value,
       );
     }
@@ -153,13 +142,35 @@ class OmniModel {
     return OmniModel.fromMap(newMap);
   }
 
-  /// Try to get the specified field as an underlying [OmniModel], returns the identity in case of not found or if the field is not a `Map`
-  OmniModel tokenAsModel(String path) =>
-      tokenOr<OmniModel>(path, OmniModel.identity());
+  /// Edit the current model in place. Add the fields if not present in the original model.
+  /// Supports deep pathing.
+  /// -----
+  /// Example
+  ///
+  /// ```dart
+  /// {
+  ///   "field": 0, "data.entry.payload": "dummy"
+  /// }
+  /// ```
+  ///
+  /// In this case the [OmniModel] will be modified by changing the `["field"]` value to 0 and the field corresponding to `["data"]["entry"]["payload"]` to "dummy"
+  void edit(Map<String, dynamic> fieldPaths) {
+    Map newJson = json;
+    for (final element in fieldPaths.entries) {
+      var key = OmniModelPerferences.enforceLowerCaseKeys ? element.key.toLowerCase() : element.key;
+      newJson = newJson.deepUpdate(
+        key.trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter),
+        element.value,
+      );
+    }
+    _data = Map<String, dynamic>.from(newJson);
+  }
+
+  /// Try to get the specified field as an underlying [OmniModel], returns the empty map in case of not found or if the field is not a `Map`
+  OmniModel tokenAsModel(String path) => tokenOr<OmniModel>(path, OmniModel.empty());
 
   /// Force the default value to a non nullable type
-  T tokenOr<T>(String path, T defaultValue) =>
-      tokenOrNull<T>(path) ?? defaultValue;
+  T tokenOr<T>(String path, T defaultValue) => tokenOrNull<T>(path) ?? defaultValue;
 
   /// Safely access a map with a combined path. The path will be converted to lower case.
   /// Examples paths:
@@ -172,10 +183,7 @@ class OmniModel {
     if (OmniModelPerferences.enforceLowerCaseKeys) {
       path = path.toLowerCase();
     }
-    var fields = path
-        .trim()
-        .replaceAll(_delimiters, _defaultDelimiter)
-        .split(_defaultDelimiter);
+    var fields = path.trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter);
     dynamic current = _data;
     String key = "";
     for (final t in fields) {
@@ -201,7 +209,7 @@ class OmniModel {
     if (current is T) {
       return current;
     } else if (OmniModelPerferences.enableHints) {
-      logWarning(
+      printWarning(
         "tried to retrieve $key as $T but value is of type ${current.runtimeType}",
       );
     }
