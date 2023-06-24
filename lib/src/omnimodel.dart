@@ -22,14 +22,6 @@ class OmniModelPerferences {
 
 /// Wrap data and access it safely: forget about errors or missing keys
 class OmniModel {
-  OmniModel._(Map map)
-      : _data = map.map(
-          (key, value) => MapEntry(
-            OmniModelPerferences.enforceLowerCaseKeys ? key.toString().toLowerCase() : key.toString(),
-            value,
-          ),
-        );
-
   /// Empty model
   factory OmniModel.empty() => OmniModel._({});
 
@@ -61,6 +53,15 @@ class OmniModel {
 
   /// Create the model from the entries of a map
   factory OmniModel.fromEntries(Iterable<MapEntry<String, dynamic>> entries) => OmniModel._(Map.fromEntries(entries));
+  OmniModel._(Map map)
+      : _data = map.map(
+          (key, value) => MapEntry(
+            OmniModelPerferences.enforceLowerCaseKeys ? key.toString().toLowerCase() : key.toString(),
+            value,
+          ),
+        );
+
+  Map<String, dynamic> toJson() => json;
 
   static const String _defaultDelimiter = ".";
   static final RegExp _delimiters = RegExp(r"\.+|\/+|\|+|\\+|\,+");

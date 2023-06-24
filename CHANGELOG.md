@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+
+-   Added the automatic conversion to json, so that `jsonEncode()` works correctly when encoding OmniModels
+
 ## 1.1.0
 
 ### ❗Breaking changes

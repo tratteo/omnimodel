@@ -89,6 +89,14 @@ void main() {
       expect(model.toRawJson(), jsonEncode(testMap));
       expect(model.toRawJson(indent: "\t"), JsonEncoder.withIndent("\t").convert(model.json));
     });
+    test("json automatic conversion", () {
+      var model = OmniModel.fromMap(testMap);
+      expect(jsonEncode(model), jsonEncode(testMap));
+      model.edit({
+        "new_model": OmniModel.fromMap({"new_id": 0, "another_id": 1})
+      });
+      expect(jsonEncode(model), jsonEncode(model.json));
+    });
     test("token as model", () {
       var model = OmniModel.fromMap(testMap);
 
