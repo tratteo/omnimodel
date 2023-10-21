@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.2
+
+-   Added the `clone()` method
+-   Solved a problem that returned an empty instance when using `OmniModel.fromDynamic()` and passing an omnimodel instance.
+
 ## 1.1.1
 
 -   Added the automatic conversion to json, so that `jsonEncode()` works correctly when encoding OmniModels

@@ -26,15 +26,14 @@ class OmniModel {
   factory OmniModel.empty() => OmniModel._({});
 
   /// Try to create from a dynamic type.
-  ///
-  /// - If the type is not `Map`, returns an empty model
-  ///
   /// - Any map type will be converted to `Map<String, dynamic>` by using `toString()` on keys
-  factory OmniModel.fromDynamic(dynamic value) => value is Map
-      ? OmniModel.fromEntries(
-          value.entries.map((e) => MapEntry(e.key.toString(), e.value)),
-        )
-      : OmniModel.empty();
+  factory OmniModel.fromDynamic(dynamic value) => value is OmniModel
+      ? value.clone()
+      : value is Map
+          ? OmniModel.fromEntries(
+              value.entries.map((e) => MapEntry(e.key.toString(), e.value)),
+            )
+          : OmniModel.empty();
 
   /// Create the model from a map
   ///
@@ -114,6 +113,9 @@ class OmniModel {
 
   /// String encoding of the model
   String toRawJson({String? indent}) => JsonEncoder.withIndent(indent).convert(json);
+
+  /// Clone the model and get a new instance
+  OmniModel clone() => OmniModel.fromMap(json);
 
   @override
   String toString() => toRawJson();

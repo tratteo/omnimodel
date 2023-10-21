@@ -15,7 +15,7 @@ void main() {
         "l31": 0,
         "l32": 0,
       },
-    }
+    },
   };
   group("factories", () {
     test("empty", () {
@@ -27,6 +27,8 @@ void main() {
       expect(model.json, {});
       model = OmniModel.fromDynamic(testMap);
       expect(model.json, testMap);
+      var newModel = OmniModel.fromDynamic(model);
+      expect(model.json, newModel.json);
     });
     test("from map", () {
       var model = OmniModel.fromMap({});
@@ -83,7 +85,13 @@ void main() {
   });
   group("methods", () {
     setUp(() {});
-
+    test("clone", () {
+      var model = OmniModel.fromMap(testMap);
+      var clone = model.clone();
+      expect(model.json, clone.json);
+      model.edit({"l11": 100});
+      expect(model.json, isNot(clone.json));
+    });
     test("to raw json", () {
       var model = OmniModel.fromRawJson(jsonEncode(testMap));
       expect(model.toRawJson(), jsonEncode(testMap));
@@ -93,7 +101,7 @@ void main() {
       var model = OmniModel.fromMap(testMap);
       expect(jsonEncode(model), jsonEncode(testMap));
       model.edit({
-        "new_model": OmniModel.fromMap({"new_id": 0, "another_id": 1})
+        "new_model": OmniModel.fromMap({"new_id": 0, "another_id": 1}),
       });
       expect(jsonEncode(model), jsonEncode(model.json));
     });

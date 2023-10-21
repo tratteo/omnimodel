@@ -17,13 +17,13 @@ void main() {
     "third": {
       "key1": true,
       "key2": 0,
-      "key3": [0, 1, 2, 3]
+      "key3": [0, 1, 2, 3],
     },
     "fourth": [
       "tag1",
       "tag2",
       "tag3",
-    ]
+    ],
   };
 
   //* Run with
