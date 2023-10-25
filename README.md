@@ -99,9 +99,9 @@ var closeMatch = model.similar("metadata") //<--- will return "meta"
 ## Flutter
 The `OmniModel` package is very useful in situations of declarative programming. With **Flutter**, the possibility to prevent null checks on each data key allows to make the code smaller and less bug prone.
 ```dart
-if(map["meta"] != null && map["meta"]["birth_date"] != null)
+if(data["meta"] != null && data["meta"]["birth_date"] != null)
     Text(
-        map["meta"]["birth_date"]
+        data["meta"]["birth_date"]
     );
 else
     Text(
