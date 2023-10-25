@@ -35,7 +35,7 @@ Advanced usages can be found in the `/example` folder.
 ## Examples
 
 Suppose a certain `Map` containing the following data:
-```json
+```dart
 data = {
     "name": "Mario",
     "surname": "Rossi",
