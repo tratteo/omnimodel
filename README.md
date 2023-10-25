@@ -84,7 +84,7 @@ model.edit({
 });
 // Add an interest
 model.edit({
-    "interests": model.tokenOr<List<String>>("interests", List.empty())..add("Physics")
+    "interests": model.tokenOr<List<String>>("interests", List.empty())..add("Maths")
 });
 
 //--> Or get a new model instance
@@ -93,7 +93,7 @@ var newModel = model.copyWith({
     "meta.phone": {"mobile":"+39 3331234567"}
 });
 
-//--> For debugging purposes, get the most similar keys to the provided one. Uses a similarity convolution algorithm
+//--> Get the most similar keys to the provided one. Uses a similarity convolution algorithm
 var closeMatch = model.similar("metadata") //<--- will return "meta"
 ```
 ## Flutter
@@ -109,7 +109,8 @@ else
     );
 
 
-//---> With the OmniModel the code is smaller and easier to mantain. Also the generic nature of the tokenOr method allows to enforce static types
+//---> With the OmniModel the code is smaller and easier to mantain.
+// Also the generic nature of the tokenOr method allows to enforce static types
 
 Text(
     model.tokenOr<String>("meta.birth_date","Birth date not provided")
