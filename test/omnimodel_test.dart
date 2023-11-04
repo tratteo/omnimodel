@@ -3,7 +3,6 @@
 import "dart:convert";
 
 import "package:omnimodel/omnimodel.dart";
-import "package:omnimodel/src/omnimodel.dart";
 import "package:test/test.dart";
 
 void main() {
