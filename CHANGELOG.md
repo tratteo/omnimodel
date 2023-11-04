@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.3
+
+-   Added the `tokenType()` method that returns the `JsonType` of a token of the OmniModel
+
 ## 1.1.2
 
 -   Added the `clone()` method

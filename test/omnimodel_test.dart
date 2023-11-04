@@ -3,6 +3,7 @@
 import "dart:convert";
 
 import "package:omnimodel/omnimodel.dart";
+import "package:omnimodel/src/omnimodel.dart";
 import "package:test/test.dart";
 
 void main() {
@@ -160,6 +161,23 @@ void main() {
       expect(model.tokenOrNull("l13.l22"), 1);
       model.edit({"new": 1});
       expect(model.tokenOrNull("new"), 1);
+    });
+    test("token type", () {
+      var model = OmniModel.fromMap({
+        "number": 0,
+        "map": {"dummy": "Example"},
+        "bool": true,
+        "string": "string_value",
+        "array": [1, 2, 3, 4],
+        "null": null,
+      });
+      expect(model.tokenType("number"), JsonType.number);
+      expect(model.tokenType("map"), JsonType.map);
+      expect(model.tokenType("bool"), JsonType.bool);
+      expect(model.tokenType("string"), JsonType.string);
+      expect(model.tokenType("array"), JsonType.array);
+      expect(model.tokenType("null"), JsonType.nil);
+      expect(model.tokenType("not_existing"), JsonType.nil);
     });
   });
   group("preferences", () {

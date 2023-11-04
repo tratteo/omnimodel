@@ -9,6 +9,8 @@ enum SimilarityBackend {
   convolution,
 }
 
+enum JsonType { array, map, number, string, bool, nil }
+
 class OmniModelPerferences {
   /// Toggle console hints about mispelled keys and mismatched types
   static bool enableHints = true;
@@ -85,6 +87,31 @@ class OmniModel {
       var text = "$original not found -> maybe one of [${closeMatches.join(", ")}] ?";
       printWarning(text);
     }
+  }
+
+  /// Return the [JsonType] of the element at the provided path.
+  ///
+  /// If the element does not exist, returns [JsonType.nil]
+  JsonType tokenType(String path) {
+    if (OmniModelPerferences.enforceLowerCaseKeys) {
+      path = path.toLowerCase();
+    }
+    var fields = path.trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter);
+    dynamic current = _data;
+    for (final field in fields) {
+      if (current is! Map) return JsonType.nil;
+      current = current[field];
+      if (current == null) {
+        return JsonType.nil;
+      }
+    }
+    if (current == null) return JsonType.nil;
+    if (current is List) return JsonType.array;
+    if (current is num) return JsonType.number;
+    if (current is bool) return JsonType.bool;
+    if (current is String) return JsonType.string;
+    if (current is Map) return JsonType.map;
+    return JsonType.nil;
   }
 
   /// Return the entry with the most similar key as the provided one.
@@ -189,13 +216,13 @@ class OmniModel {
     var fields = path.trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter);
     dynamic current = _data;
     String key = "";
-    for (final t in fields) {
-      key = t;
+    for (final field in fields) {
+      key = field;
       if (current is! Map) return null;
       var checkpoint = current;
-      current = current[t];
+      current = current[field];
       if (current == null) {
-        _displayKeyHints(t, checkpoint);
+        _displayKeyHints(field, checkpoint);
         return null;
       }
     }
