@@ -16,7 +16,7 @@ class OmniModelPerferences {
   static bool enableHints = true;
 
   /// Enforce the keys of every [OmniModel] to be lowercase. This automatically changes the keys to lowercase when creating and accessing the [OmniModel]
-  static bool enforceLowerCaseKeys = true;
+  static bool enforceLowerCaseKeys = false;
 
   /// Edit the algorithm used for calculating similarity among strings.
   static SimilarityBackend similarityBackend = SimilarityBackend.convolution;

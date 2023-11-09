@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.5
+
+-   Changed the default value of `OmniModelPreferences.enforceLowerCaseKeys` to **false**
+
 ## 1.1.4
 
 -   Fixed the exposition of `JsonType` and `SimilarityBackend` enums
