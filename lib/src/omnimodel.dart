@@ -89,6 +89,23 @@ class OmniModel {
     }
   }
 
+  void remove(String path) {
+    if (OmniModelPerferences.enforceLowerCaseKeys) {
+      path = path.toLowerCase();
+    }
+    var fields = path.trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter);
+    if (fields.length == 1) {
+      _data.remove(fields.first);
+      return;
+    }
+    Map<String, dynamic>? current = _data;
+    for (int i = 0; i < fields.length; i++) {
+      current = current![fields[i]];
+      if (i < fields.length - 1 && current == null) return;
+    }
+    current?.remove(fields.last);
+  }
+
   /// Return the [JsonType] of the element at the provided path.
   ///
   /// If the element does not exist, returns [JsonType.nil]
@@ -216,6 +233,7 @@ class OmniModel {
     var fields = path.trim().replaceAll(_delimiters, _defaultDelimiter).split(_defaultDelimiter);
     dynamic current = _data;
     String key = "";
+
     for (final field in fields) {
       key = field;
       if (current is! Map) return null;

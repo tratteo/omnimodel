@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.6
+
+-   Added the `remove` method to delete the **OmniModel** keys
+
 ## 1.1.5
 
 -   Changed the default value of `OmniModelPreferences.enforceLowerCaseKeys` to **false**

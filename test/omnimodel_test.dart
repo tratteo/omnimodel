@@ -145,6 +145,14 @@ void main() {
       expect(model.tokenOrNull("l11"), testMap["l11"]);
       expect(model.tokenOrNull("invalid"), isNull);
     });
+    test("remove", () {
+      var model = OmniModel.fromMap(testMap);
+      model.remove("l11");
+      model.remove("not_existent");
+      expect(model.tokenOrNull("l11"), isNull);
+      model.remove("l11.l22");
+      expect(model.tokenOrNull("l11.l22"), isNull);
+    });
     test("copy with", () {
       var model = OmniModel.fromMap(testMap).copyWith({"l11": 1});
       expect(model.tokenOrNull("l11"), 1);
