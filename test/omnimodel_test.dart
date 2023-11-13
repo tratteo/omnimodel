@@ -6,7 +6,7 @@ import "package:omnimodel/omnimodel.dart";
 import "package:test/test.dart";
 
 void main() {
-  const testMap = {
+  const Map<String, dynamic> testMap = {
     "l11": 0,
     "l12": 0,
     "l13": {
@@ -149,9 +149,12 @@ void main() {
       var model = OmniModel.fromMap(testMap);
       model.remove("l11");
       model.remove("not_existent");
-      expect(model.tokenOrNull("l11"), isNull);
-      model.remove("l11.l22");
-      expect(model.tokenOrNull("l11.l22"), isNull);
+      expect(model.tokenOrNull<num>("l11"), isNull);
+
+      model.remove("l13.l21");
+      expect(model.tokenOrNull("l13.l21"), isNull);
+
+      expect(model.tokenOrNull("l13.l22"), testMap["l13"]["l22"]);
     });
     test("copy with", () {
       var model = OmniModel.fromMap(testMap).copyWith({"l11": 1});

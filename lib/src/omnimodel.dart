@@ -89,6 +89,7 @@ class OmniModel {
     }
   }
 
+  /// Remove a key from the model. Supports deep pathing.
   void remove(String path) {
     if (OmniModelPerferences.enforceLowerCaseKeys) {
       path = path.toLowerCase();
@@ -98,12 +99,15 @@ class OmniModel {
       _data.remove(fields.first);
       return;
     }
-    Map<String, dynamic>? current = _data;
-    for (int i = 0; i < fields.length; i++) {
-      current = current![fields[i]];
-      if (i < fields.length - 1 && current == null) return;
-    }
-    current?.remove(fields.last);
+    var prePath = fields.take(fields.length - 1).join(".");
+    var entries = tokenAsModel(prePath).entries;
+    edit({
+      prePath: OmniModel.fromEntries(
+        entries.where(
+          (element) => element.key != fields.last,
+        ),
+      ).json,
+    });
   }
 
   /// Return the [JsonType] of the element at the provided path.

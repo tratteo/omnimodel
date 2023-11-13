@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.8
+
+-   Fixed the `remove` method implementation in case of particular nested keys
+
+## 1.1.7
+
+-   Added the `remove` documentation
+
 ## 1.1.6
 
 -   Added the `remove` method to delete the **OmniModel** keys
