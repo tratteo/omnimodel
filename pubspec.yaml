@@ -3,7 +3,7 @@ description: Model complex data and access it in an easy and safe way. OmniModel
 repository: https://github.com/tratteo/omnimodel
 version: 1.1.10
 environment:
-    sdk: ">=3.2.0 <4.0.0"
+    sdk: ">=3.4.0 <4.0.0"
 
 dev_dependencies:
     lints: ^5.0.0
