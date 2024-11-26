@@ -1,8 +1,12 @@
 # Changelog
 
+## 1.1.10
+
+-   Bumped Dart bounds
+
 ## 1.1.9
 
--   Bumped Dart version and dependencies
+-   Bumped dependencies
 
 ## 1.1.8
 

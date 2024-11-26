@@ -1,4 +1,4 @@
-library omnimodel;
+library;
 
 export "src/common/extensions.dart";
 export "src/omnimodel.dart" show OmniModel;
