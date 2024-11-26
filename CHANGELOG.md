@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.9
+
+-   Bumped Dart version and dependencies
+
 ## 1.1.8
 
 -   Fixed the `remove` method implementation in case of particular nested keys
