@@ -20,6 +20,5 @@ void omniPrint(Object? object, Severity severity) {
     case Severity.error:
       print("[omnimodel] $object".red().dim());
       break;
-    default:
   }
 }
