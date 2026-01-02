@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.11
+
+-   Fixed SDK dep
+
 ## 1.1.10
 
 -   Bumped Dart bounds
